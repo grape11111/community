@@ -2,6 +2,8 @@ package com.gudt.imis.community.controller;
 
 import com.gudt.imis.community.dataobject.AccessTokenDTO;
 import com.gudt.imis.community.dataobject.GithubUser;
+import com.gudt.imis.community.mapper.UserMapper;
+import com.gudt.imis.community.model.User;
 import com.gudt.imis.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,8 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.UUID;
+
 @Controller
-public class AuthorizedCotroller {
+public class AuthorizedController {
     @Autowired
     private GithubProvider githubProvider;
 
@@ -23,8 +29,11 @@ public class AuthorizedCotroller {
     @Value("${github.client.uri}")
     private String clientUri;
 
+    @Autowired
+    private UserMapper usermapper;
+
     @GetMapping("/callback")
-    public String callback(@RequestParam(name="code")String code,@RequestParam(name="state") String state){
+    public String callback(@RequestParam(name="code")String code, @RequestParam(name="state") String state, HttpServletRequest request,HttpServletResponse response) throws IOException {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
@@ -33,8 +42,22 @@ public class AuthorizedCotroller {
         accessTokenDTO.setState(state);
         String token=githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser=githubProvider.getGithubUser(token);
-        System.out.println(githubUser.getName());
-        return "index";
+
+        if(githubUser.getName()!=null){
+            User user = new User();
+            String Token =UUID.randomUUID().toString();
+            user.setToken(Token);
+            user.setAccount_id(String.valueOf(githubUser.getId()));
+            user.setName(githubUser.getName());
+            user.setGmt_create(System.currentTimeMillis());
+            user.setGmt_modified(user.getGmt_create());
+            usermapper.insetUser(user);
+            response.addCookie(new Cookie("Token",Token));
+            return "redirect:/";
+        }else{
+            return "redirect:/";
+        }
+        //return "index";
     }
 
 }
