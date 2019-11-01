@@ -1,18 +1,18 @@
 package com.gudt.imis.community.model;
 
 public class User {
-    private String id;
+    private Integer id;
     private String account_id;
     private String name;
     private String token;
     private Long gmt_create;
     private Long gmt_modified;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

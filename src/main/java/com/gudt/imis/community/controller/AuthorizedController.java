@@ -53,8 +53,10 @@ public class AuthorizedController {
             user.setGmt_modified(user.getGmt_create());
             usermapper.insetUser(user);
             response.addCookie(new Cookie("Token",Token));
+            //return "redirect:http://localhost:8080/publish";
             return "redirect:/";
         }else{
+            //return "redirect:http://localhost:8080/publish";
             return "redirect:/";
         }
         //return "index";
