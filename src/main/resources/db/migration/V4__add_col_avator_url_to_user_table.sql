@@ -1,0 +1,1 @@
+ALTER TABLE user ADD avator_url varchar(256) NULL;
