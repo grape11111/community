@@ -5,6 +5,13 @@ body{
     background-color: white;
     margin: 30px;
 }
+
+
+.main-index{
+    background-color: white;
+    margin: 15px 100px;
+}
+
 .btn-publish{
     float:right;
     margin-bottom: 15px;

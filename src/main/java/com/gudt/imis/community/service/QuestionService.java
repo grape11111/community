@@ -1,6 +1,8 @@
 package com.gudt.imis.community.service;
 
 import ch.qos.logback.core.joran.util.beans.BeanUtil;
+import com.github.pagehelper.PageHelper;
+import com.gudt.imis.community.dataobject.PaginationDTO;
 import com.gudt.imis.community.dataobject.QuestionDTO;
 import com.gudt.imis.community.mapper.QuestionMapper;
 import com.gudt.imis.community.mapper.UserMapper;
@@ -33,5 +35,9 @@ public class QuestionService {
             questionDTOList.add(questionDTO);
         }
         return questionDTOList;
+    }
+
+    public Integer count() {
+        return questionMapper.count();
     }
 }
