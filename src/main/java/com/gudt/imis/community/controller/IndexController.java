@@ -16,15 +16,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
 public class IndexController {
-    @Autowired
-    private UserMapper usermapper;
-
     @Autowired
     private QuestionService questionService;
 
@@ -33,25 +29,8 @@ public class IndexController {
                          @RequestParam(name="page",defaultValue = "1")Integer page,
                          @RequestParam(name="size",defaultValue = "5")Integer size
     ){
-        Cookie[]cookies=request.getCookies();
-        if (cookies!=null&&cookies.length!=0) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName() != null) {
-                    if (("Token").equals(cookie.getName())) {
-                        User user = usermapper.findByToken(cookie.getValue());
-                        if (user != null) {
-                            request.getSession().setAttribute("user", user);
-                        }
-                        break;
-                    }
-                }
-            }
-        }else {
-            request.getSession().setAttribute("error", "用户未登录");
-        }
         PageHelper.startPage(page,size);
         List<QuestionDTO> questionlist= questionService.list();
-
         PaginationDTO paginationDTO= new PaginationDTO();
         paginationDTO.setQuestions(questionlist);
         Integer totalCount=questionService.count();

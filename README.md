@@ -10,6 +10,9 @@
 ## 工具
 [百度](https://www.baidu.com)
 
+[Spring文档](https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/web.html#mvc-config-interceptors)
+
+[Thymeleaf文档](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#setting-attribute-values)
 
 ##SQL语句
 ...sql

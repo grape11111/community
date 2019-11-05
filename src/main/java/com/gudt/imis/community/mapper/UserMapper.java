@@ -2,10 +2,7 @@ package com.gudt.imis.community.mapper;
 
 
 import com.gudt.imis.community.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Mapper
@@ -20,4 +17,11 @@ public interface UserMapper {
 
     @Select("select * from user where id=#{id}")
     User findById(@Param("id") Integer creator);
+
+    @Select("select * from user where account_id=#{accountId}")
+    User findByAccountId(@Param("accountId")String accountId);
+
+    @Update("update user set token=#{token} where account_id=#{accountId}")
+    boolean updateUser(@Param("accountId")String accountId,@Param("token")String token);
 }
+

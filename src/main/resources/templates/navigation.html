@@ -33,9 +33,14 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">我的问题</a></li>
+                                <li><a href="/profile/questions">个人中心</a></li>
                                 <li><a href="#">退出登录</a></li>
                             </ul>
+                        </li>
+                        <li th:if="${session.user!=null}">
+                            <a href="">
+                                <img class="media-object img-rounded" style="width:40px;height:40px;margin: 0px"  th:src="${session.user.getAvatarUrl()}"  alt="头像">
+                            </a>
                         </li>
                     </ul>
                 </div>

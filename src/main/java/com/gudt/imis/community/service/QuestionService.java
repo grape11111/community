@@ -40,4 +40,20 @@ public class QuestionService {
     public Integer count() {
         return questionMapper.count();
     }
+
+    public List<QuestionDTO> listByUserId(Integer id) {
+        List<Question> questionlist=questionMapper.listByUserId(id);
+        List<QuestionDTO> questionDTOList=new ArrayList<QuestionDTO>();
+        for(Question qt:questionlist){
+            QuestionDTO questionDTO=new QuestionDTO();
+            BeanUtils.copyProperties(qt,questionDTO);
+            questionDTOList.add(questionDTO);
+        }
+        return questionDTOList;
+    }
+
+    public Integer countByUserId(Integer id) {
+
+        return questionMapper.countByUserId(id);
+    }
 }

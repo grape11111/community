@@ -44,17 +44,31 @@ public class AuthorizedController {
         GithubUser githubUser=githubProvider.getGithubUser(token);
 
         if(githubUser.getName()!=null){
+//            User user = new User();
+//            String Token =UUID.randomUUID().toString();
+//            user.setToken(Token);
+//            user.setAccountId(String.valueOf(githubUser.getId()));
+//            user.setName(githubUser.getName());
+//            user.setGmtCreate(System.currentTimeMillis());
+//            user.setGmtModified(user.getGmtCreate());
+//            user.setAvatarUrl(githubUser.getAvatarUrl());
+//            usermapper.insetUser(user);
+//            response.addCookie(new Cookie("Token",Token));
             User user = new User();
             String Token =UUID.randomUUID().toString();
-            user.setToken(Token);
-            user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setName(githubUser.getName());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            user.setAvatarUrl(githubUser.getAvatarUrl());
-            usermapper.insetUser(user);
+            String accountId=String.valueOf(githubUser.getId());
+            if(usermapper.findByAccountId(accountId)==null) {
+                user.setToken(Token);
+                user.setAccountId(String.valueOf(githubUser.getId()));
+                user.setName(githubUser.getName());
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                user.setAvatarUrl(githubUser.getAvatarUrl());
+                usermapper.insetUser(user);
+            }else{
+                usermapper.updateUser(accountId,Token);
+            }
             response.addCookie(new Cookie("Token",Token));
-            //return "redirect:http://localhost:8080/publish";
             return "redirect:/";
         }else{
             //return "redirect:http://localhost:8080/publish";
