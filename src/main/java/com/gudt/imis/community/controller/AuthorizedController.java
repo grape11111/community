@@ -44,29 +44,19 @@ public class AuthorizedController {
         GithubUser githubUser=githubProvider.getGithubUser(token);
 
         if(githubUser.getName()!=null){
-//            User user = new User();
-//            String Token =UUID.randomUUID().toString();
-//            user.setToken(Token);
-//            user.setAccountId(String.valueOf(githubUser.getId()));
-//            user.setName(githubUser.getName());
-//            user.setGmtCreate(System.currentTimeMillis());
-//            user.setGmtModified(user.getGmtCreate());
-//            user.setAvatarUrl(githubUser.getAvatarUrl());
-//            usermapper.insetUser(user);
-//            response.addCookie(new Cookie("Token",Token));
             User user = new User();
             String Token =UUID.randomUUID().toString();
             String accountId=String.valueOf(githubUser.getId());
+            user.setToken(Token);
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setName(githubUser.getName());
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());
+            user.setAvatarUrl(githubUser.getAvatarUrl());
             if(usermapper.findByAccountId(accountId)==null) {
-                user.setToken(Token);
-                user.setAccountId(String.valueOf(githubUser.getId()));
-                user.setName(githubUser.getName());
-                user.setGmtCreate(System.currentTimeMillis());
-                user.setGmtModified(user.getGmtCreate());
-                user.setAvatarUrl(githubUser.getAvatarUrl());
                 usermapper.insetUser(user);
             }else{
-                usermapper.updateUser(accountId,Token);
+                usermapper.updateUser(user);
             }
             response.addCookie(new Cookie("Token",Token));
             return "redirect:/";
@@ -74,7 +64,14 @@ public class AuthorizedController {
             //return "redirect:http://localhost:8080/publish";
             return "redirect:/";
         }
-        //return "index";
+    }
+    @GetMapping("/logout")
+    public String callback(HttpServletRequest request,HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie=new Cookie("Token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 
 }
