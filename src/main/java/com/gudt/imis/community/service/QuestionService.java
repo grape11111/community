@@ -7,7 +7,9 @@ import com.gudt.imis.community.dataobject.QuestionDTO;
 import com.gudt.imis.community.mapper.QuestionMapper;
 import com.gudt.imis.community.mapper.UserMapper;
 import com.gudt.imis.community.model.Question;
+import com.gudt.imis.community.model.QuestionExample;
 import com.gudt.imis.community.model.User;
+import com.gudt.imis.community.model.UserExample;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,10 +27,16 @@ public class QuestionService {
 
 
     public List<QuestionDTO> list() {
-        List<Question> questionlist=questionMapper.list();
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria();
+        List<Question> questionlist=questionMapper.selectByExample(questionExample);
         List<QuestionDTO> questionDTOList=new ArrayList<QuestionDTO>();
         for(Question qt:questionlist){
-            User user=userMapper.findById(qt.getCreator());
+            UserExample userExample=new UserExample();
+            userExample.createCriteria()
+                    .andIdEqualTo(qt.getCreator());
+            List<User> list=userMapper.selectByExample(userExample);
+            User user=list.get(0);
             QuestionDTO questionDTO=new QuestionDTO();
             BeanUtils.copyProperties(qt,questionDTO);
             questionDTO.setUser(user);
@@ -38,11 +46,16 @@ public class QuestionService {
     }
 
     public Integer count() {
-        return questionMapper.count();
+        QuestionExample questionExample=new QuestionExample();
+        questionExample.createCriteria();
+        return questionMapper.selectByExample(questionExample).size();
     }
 
     public List<QuestionDTO> listByUserId(Integer id) {
-        List<Question> questionlist=questionMapper.listByUserId(id);
+        QuestionExample questionExample=new QuestionExample();
+        questionExample.createCriteria()
+                .andCreatorEqualTo(id);
+        List<Question> questionlist=questionMapper.selectByExample(questionExample);
         List<QuestionDTO> questionDTOList=new ArrayList<QuestionDTO>();
         for(Question qt:questionlist){
             QuestionDTO questionDTO=new QuestionDTO();
@@ -53,16 +66,43 @@ public class QuestionService {
     }
 
     public Integer countByUserId(Integer id) {
-
-        return questionMapper.countByUserId(id);
+        QuestionExample questionExample=new QuestionExample();
+        questionExample.createCriteria()
+                .andCreatorEqualTo(id);
+        return questionMapper.selectByExample(questionExample).size();
     }
 
     public QuestionDTO getById(Integer id) {
-        Question question=questionMapper.getById(id);
-        User user=userMapper.findById(question.getCreator());
+        Question question=questionMapper.selectByPrimaryKey(id);
+        UserExample userExample=new UserExample();
+        userExample.createCriteria().andIdEqualTo(question.getCreator());
+        User user=userMapper.selectByExample(userExample).get(0);
         QuestionDTO questionDTO=new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
         questionDTO.setUser(user);
         return questionDTO;
+    }
+
+    public void createOrUpdate(Question question) {
+        if(question.getId()==null){
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper.insert(question);
+        }else{
+            QuestionExample questionExample=new QuestionExample();
+            questionExample.createCriteria()
+                    .andIdEqualTo(question.getId());
+            questionMapper.updateByExampleSelective(question,questionExample);
+        }
+    }
+
+    public void incView(Integer id) {
+        QuestionExample questionExample=new QuestionExample();
+        questionExample.createCriteria()
+                .andCreatorEqualTo(id);
+        int new_view=questionMapper.selectByPrimaryKey(id).getViewCount()+1;
+        Question question=new Question();
+        question.setViewCount(new_view);
+        questionMapper.updateByExampleSelective(question,questionExample);
     }
 }

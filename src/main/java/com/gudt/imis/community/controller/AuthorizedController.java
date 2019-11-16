@@ -4,6 +4,7 @@ import com.gudt.imis.community.dataobject.AccessTokenDTO;
 import com.gudt.imis.community.dataobject.GithubUser;
 import com.gudt.imis.community.mapper.UserMapper;
 import com.gudt.imis.community.model.User;
+import com.gudt.imis.community.model.UserExample;
 import com.gudt.imis.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,10 +54,15 @@ public class AuthorizedController {
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatarUrl());
-            if(usermapper.findByAccountId(accountId)==null) {
-                usermapper.insetUser(user);
+            UserExample userExample=new UserExample();
+            userExample.createCriteria()
+                    .andAccountIdEqualTo(accountId);
+            if((usermapper.selectByExample(userExample)).size()==0){
+                usermapper.insert(user);
             }else{
-                usermapper.updateUser(user);
+                user.setId((usermapper.selectByExample(userExample)).get(0).getId());
+                user.setBio((usermapper.selectByExample(userExample)).get(0).getBio());
+                usermapper.updateByExample(user,userExample);
             }
             response.addCookie(new Cookie("Token",Token));
             return "redirect:/";
