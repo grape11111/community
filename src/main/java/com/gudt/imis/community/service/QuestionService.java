@@ -4,6 +4,7 @@ import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import com.github.pagehelper.PageHelper;
 import com.gudt.imis.community.dataobject.PaginationDTO;
 import com.gudt.imis.community.dataobject.QuestionDTO;
+import com.gudt.imis.community.mapper.QuestionExtMapper;
 import com.gudt.imis.community.mapper.QuestionMapper;
 import com.gudt.imis.community.mapper.UserMapper;
 import com.gudt.imis.community.model.Question;
@@ -24,6 +25,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
 
     public List<QuestionDTO> list() {
@@ -97,12 +101,9 @@ public class QuestionService {
     }
 
     public void incView(Integer id) {
-        QuestionExample questionExample=new QuestionExample();
-        questionExample.createCriteria()
-                .andCreatorEqualTo(id);
-        int new_view=questionMapper.selectByPrimaryKey(id).getViewCount()+1;
         Question question=new Question();
-        question.setViewCount(new_view);
-        questionMapper.updateByExampleSelective(question,questionExample);
+        question.setId(id);
+        question.setViewCount(1);
+        questionExtMapper.incView(question);
     }
 }

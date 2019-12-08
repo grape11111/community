@@ -5,7 +5,6 @@
 
 [社区首页](https://spring.io/guides/gs/serving-web-content/#initial)
 
-[社区首页](https://spring.io/guides/gs/serving-web-content/#initial)
 
 ## 工具
 [百度](https://www.baidu.com)
@@ -14,6 +13,11 @@
 
 [Thymeleaf文档](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#setting-attribute-values)
 
+[SpringBoot文档](https://docs.spring.io/spring-boot/docs/2.0.1.RELEASE/reference/htmlsingle/#boot-features-webflux-error-handling-custom-error-pages)
+
+[BootStrap](https://v3.bootcss.com/css/)
+
+[test API](D:\搜狗高速下载)
 ##SQL语句
 ...sql
 
