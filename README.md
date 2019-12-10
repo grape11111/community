@@ -18,8 +18,9 @@
 [BootStrap](https://v3.bootcss.com/css/)
 
 [test API](D:\搜狗高速下载)
+
 ##SQL语句
-...sql
+```sql
 
 create table user
 (
@@ -34,11 +35,10 @@ create table user
 
 
 ALTER TABLE user ADD bio varchar(256) NULL;
-...
+```
 
-...bash
 
+```bash
 mvn flyway:migrate;
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
-
-...
+```
