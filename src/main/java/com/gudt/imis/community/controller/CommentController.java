@@ -1,10 +1,10 @@
 package com.gudt.imis.community.controller;
 
 import com.gudt.imis.community.dataobject.CommentDTO;
-import com.gudt.imis.community.mapper.CommentMapper;
 import com.gudt.imis.community.model.Comment;
 import com.gudt.imis.community.model.User;
 
+import com.gudt.imis.community.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class CommentController {
 
     @Autowired
-    private CommentMapper commentMapper;
+    private CommentService commentService;
     @ResponseBody
     @RequestMapping(value="/comment",method = RequestMethod.POST)
     public Object post(@RequestBody CommentDTO commentDTO,
@@ -39,7 +39,7 @@ public class CommentController {
         comment.setGmtModified(System.currentTimeMillis());
         comment.setCommentator(user.getId());
         comment.setLikeCount(0);
-        if(commentMapper.insert(comment)!=0) {
+        if(commentService.insert(comment)!=0){
             map.put("message","评论成功");
         }
         return map;

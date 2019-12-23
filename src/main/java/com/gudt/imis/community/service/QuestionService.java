@@ -35,6 +35,23 @@ public class QuestionService {
         questionExample.createCriteria();
         List<Question> questionlist=questionMapper.selectByExample(questionExample);
         List<QuestionDTO> questionDTOList=new ArrayList<QuestionDTO>();
+        this.copyProperties(questionlist,questionDTOList);
+        return questionDTOList;
+    }
+
+
+    public List<QuestionDTO> listByCondition(String condition) {
+        QuestionExample questionExample = new QuestionExample();
+        String s="%"+condition+"%";
+        questionExample.createCriteria().andTitleLike(s);
+        List<Question> questionlist=questionMapper.selectByExample(questionExample);
+        List<QuestionDTO> questionDTOList=new ArrayList<QuestionDTO>();
+        this.copyProperties(questionlist,questionDTOList);
+        return questionDTOList;
+    }
+
+    //复制属性值
+    public void copyProperties(List<Question> questionlist,List<QuestionDTO> questionDTOList){
         for(Question qt:questionlist){
             UserExample userExample=new UserExample();
             userExample.createCriteria()
@@ -46,7 +63,6 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-        return questionDTOList;
     }
 
     public Integer count() {
@@ -89,10 +105,15 @@ public class QuestionService {
 
     public void createOrUpdate(Question question) {
         if(question.getId()==null){
+            //创建
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(System.currentTimeMillis());
+            question.setViewCount(0);
+            question.setCommentCount(0);
+            question.setLikeCount(0);
             questionMapper.insert(question);
         }else{
+            //更新
             QuestionExample questionExample=new QuestionExample();
             questionExample.createCriteria()
                     .andIdEqualTo(question.getId());
