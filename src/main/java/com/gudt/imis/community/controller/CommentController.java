@@ -39,8 +39,10 @@ public class CommentController {
         comment.setGmtModified(System.currentTimeMillis());
         comment.setCommentator(user.getId());
         comment.setLikeCount(0);
-        if(commentService.insert(comment)!=0){
-            map.put("message","评论成功");
+        if(commentService.insert(comment)!=0) {
+            map.put("message", "评论成功");
+        }else{
+            map.put("message", "评论失败");
         }
         return map;
     }
